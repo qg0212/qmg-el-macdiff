@@ -1,0 +1,1 @@
+Développement d'un solveur de contraintes, dédié aux contrainte de différence.
