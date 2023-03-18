@@ -35,4 +35,46 @@ public class Network
 	{
 		return this.constraints;
 	}
+
+	public boolean add(Variable variable)
+	{
+		return this.add(variable, false);
+	}
+
+	public boolean add(Variable variable, boolean use_for_branching)
+	{
+		if(this.variables.add(variable))
+		{
+			this.constraints.put(variable, new UniqueList<>());
+			if(use_for_branching)
+			{
+				this.branchings.add(variable);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public boolean add(Variable a, Variable b)
+	{
+		UniqueList<Variable> a_neighbors = this.constraint(a);
+		if(a_neighbors!=null)
+		{
+			UniqueList<Variable> b_neighbors = this.constraint(b);
+			if(b_neighbors!=null)
+			{
+				if(a_neighbors.add(b))
+				{
+					if(b_neighbors.add(a))
+					{
+						a.incrDegree();
+						b.incrDegree();
+						return true;
+					}
+					throw new RuntimeException("A est voisine de B mais B n'est pas voisine de A");
+				}
+			}
+		}
+		return false;
+	}
 }
