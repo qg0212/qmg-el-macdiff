@@ -77,4 +77,24 @@ public class Network
 		}
 		return false;
 	}
+
+	@Override
+	public String toString()
+	{
+		String network = "> Variables :";
+		for(Variable variable : this.variables)
+		{
+			network = network.concat(String.format("\n>>> %s", variable));
+		}
+		network = network.concat("\n> Contraintes :");
+		for(Variable variable : this.variables)
+		{
+			network = network.concat(String.format("\n>>> Contraintes de %d :", variable.id()));
+			for(Variable neighbor : this.constraint(variable))
+			{
+				network = network.concat(String.format(" %d", neighbor.id()));
+			}
+		}
+		return network;
+	}
 }
