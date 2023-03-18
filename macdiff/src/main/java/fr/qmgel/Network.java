@@ -2,6 +2,7 @@ package fr.qmgel;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Stack;
 
 public class Network
 {
@@ -34,6 +35,19 @@ public class Network
 	public Hashtable<Variable,UniqueList<Variable>> constraints()
 	{
 		return this.constraints;
+	}
+
+	public Stack<Variable> singletons()
+	{
+		Stack<Variable> singletons = new Stack<>();
+		for(Variable variable : this.variables)
+		{
+			if(variable.singleton())
+			{
+				singletons.push(variable);
+			}
+		}
+		return singletons;
 	}
 
 	public boolean add(Variable variable)
@@ -76,5 +90,36 @@ public class Network
 			}
 		}
 		return false;
+	}
+
+	public Stack<Changement> restoreConsistency()
+	{
+		Stack<Changement> changes = new Stack<>();
+		Stack<Variable> singletons = this.singletons();
+		while(!singletons.empty())
+		{
+			Variable singleton = singletons.pop();
+			Integer value = singleton.domain().get(0);
+			UniqueList<Variable> neighbors = this.constraint(singleton);
+			for(Variable neighbor : neighbors)
+			{
+				if(neighbor.domain().remove(value))
+				{
+					changes.push(new Changement(neighbor, value));
+					if(neighbor.domain().empty())
+					{
+						return changes;
+					}
+					else
+					{
+						if(neighbor.singleton())
+						{
+							singletons.push(neighbor);
+						}
+					}
+				}
+			}
+		}
+		return changes;
 	}
 }
