@@ -8,6 +8,12 @@ public class Solution
 	private int number_of_branchings;
 	private Hashtable<Variable,Integer> assignments;
 
+	/**
+	 * Construit une solution pour un réseau spécifique
+	 * 
+	 * @param network le réseau auquel appartient la solution
+	 * @param number_of_branchings le nombre de branchements nécessaire pour trouver la solution
+	 */
 	public Solution(Network network, int number_of_branchings)
 	{
 		this.number_of_branchings = number_of_branchings;

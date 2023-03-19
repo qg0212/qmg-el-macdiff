@@ -8,6 +8,11 @@ public class BasicSolver
 	private int number_of_branchings;
 	private Network network;
 
+	/**
+	 * Construit un solveur basique pour un réseau spécifique
+	 * 
+	 * @param network le réseau spécifique
+	 */
 	public BasicSolver(Network network)
 	{
 		this.number_of_branchings = 0;
@@ -24,6 +29,13 @@ public class BasicSolver
 		return this.network;
 	}
 
+	/**
+	 * Recherche de solutions du réseau
+	 * 
+	 * @param all_solutions indique si on cherche toutes les solutions (<code>true</code>) ou seulement une (<code>false</code>)
+	 * 
+	 * @return la liste des solutions trouvées (vide s'il n'y en a pas)
+	 */
 	public ArrayList<Solution> solve(boolean all_solutions)
 	{
 		ArrayList<Solution> solutions = new ArrayList<>();
@@ -67,6 +79,11 @@ public class BasicSolver
 		return solutions;
 	}
 
+	/**
+	 * Cherche la variable la plus adaptée pour effectuer un branchement
+	 * 
+	 * @return la variable trouvée, ou <code>null</code> si toutes les variables sont des singletons
+	 */
 	public Variable branchingVariable()
 	{
 		double ratio = Double.POSITIVE_INFINITY;

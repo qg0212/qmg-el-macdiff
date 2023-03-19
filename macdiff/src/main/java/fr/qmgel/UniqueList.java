@@ -3,6 +3,11 @@ package fr.qmgel;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * Structure de données permettant de redéfinir certaines méthodes de la classe ArrayList, et qui n'accepte pas les doublons
+ * 
+ * @author Quentin G., Elodie L.
+ */
 public class UniqueList<T> implements Iterable<T>
 {
 	private ArrayList<T> list;
