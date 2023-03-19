@@ -22,6 +22,11 @@ public class Solution
 		}
 	}
 
+	public int numberOfBranchings()
+	{
+		return this.number_of_branchings;
+	}
+
 	public Integer assignment(Variable variable)
 	{
 		return this.assignments.get(variable);
@@ -30,6 +35,37 @@ public class Solution
 	public Hashtable<Variable,Integer> assignments()
 	{
 		return this.assignments;
+	}
+
+	@Override
+	public boolean equals(Object object)
+	{
+		if(object!=null)
+		{
+			if(this!=object)
+			{
+				if(this.getClass()==object.getClass())
+				{
+					return this.equals((Solution)object);
+				}
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public boolean equals(Solution solution)
+	{
+		if(solution!=null)
+		{
+			if(this!=solution)
+			{
+				return (this.number_of_branchings==solution.numberOfBranchings() && this.assignments.equals(solution.assignments()));
+			}
+			return true;
+		}
+		return false;
 	}
 
 	@Override
