@@ -68,7 +68,7 @@ public class UniqueList<T> implements Iterable<T>
 		ArrayList<T> sub_list = new ArrayList<>();
 		if(from>=0 && to<this.count() && from<=to)
 		{
-			for(int i=from; i<=to; i++)
+			for(int i=to; i>=from; i--)
 			{
 				sub_list.add(this.remove(i));
 			}
