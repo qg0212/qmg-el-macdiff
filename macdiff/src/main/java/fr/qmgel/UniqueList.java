@@ -63,17 +63,19 @@ public class UniqueList<T> implements Iterable<T>
 
 	public ArrayList<T> remove(int from, int to)
 	{
+		to = (to + this.count()) % this.count();
+		from = (from + this.count()) % this.count();
 		ArrayList<T> sub_list = new ArrayList<>();
-		if(from>=0 && to<this.count() && from<to)
+		if(from>=0 && to<this.count() && from<=to)
 		{
 			for(int i=from; i<=to; i++)
 			{
-				sub_list.add(this.get(i));
+				sub_list.add(this.remove(i));
 			}
 		}
 		else
 		{
-			throw new RuntimeException("Valeurs incorrectes !");
+			throw new RuntimeException("Valeurs incorrectes : ("+from+"; "+to+")");
 		}
 		return sub_list;
 	}

@@ -1,5 +1,6 @@
 package fr.qmgel;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class Solution
@@ -29,5 +30,22 @@ public class Solution
 	public Hashtable<Variable,Integer> assignments()
 	{
 		return this.assignments;
+	}
+
+	@Override
+	public String toString()
+	{
+		String solution = "Solution : {";
+		Enumeration<Variable> variables = this.assignments.keys();
+		while(variables.hasMoreElements())
+		{
+			Variable variable = variables.nextElement();
+			solution = solution.concat(String.format(" %d=%d", variable.id(), this.assignment(variable)));
+			if(variables.hasMoreElements())
+			{
+				solution = solution.concat(";");
+			}
+		}
+		return solution.concat(" }");
 	}
 }
