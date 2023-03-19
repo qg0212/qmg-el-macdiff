@@ -10,6 +10,9 @@ public class Network
 	private ArrayList<Variable> branchings;
 	private Hashtable<Variable,UniqueList<Variable>> constraints;
 
+	/**
+	 * Construit un réseau de contraintes vide
+	 */
 	public Network()
 	{
 		this.variables = new UniqueList<>();
@@ -37,6 +40,11 @@ public class Network
 		return this.constraints;
 	}
 
+	/**
+	 * Cherche toutes les variables du réseau qui sont des singletons
+	 * 
+	 * @return la liste des variables qui sont des singletons, représentée par une pile
+	 */
 	public Stack<Variable> singletons()
 	{
 		Stack<Variable> singletons = new Stack<>();
@@ -50,11 +58,28 @@ public class Network
 		return singletons;
 	}
 
+	/**
+	 * Ajoute une variable auxiliare au réseau
+	 * 
+	 * @param variable la variable à ajouter
+	 * 
+	 * @return <code>true</code> si l'ajout a été fait, <code>false</code> sinon
+	 * 
+	 * @see #add(Variable,boolean)
+	 */
 	public boolean add(Variable variable)
 	{
 		return this.add(variable, false);
 	}
 
+	/**
+	 * Ajoute une variable au réseau
+	 * 
+	 * @param variable la variable à ajouter
+	 * @param use_for_branchings indique si la variable peut être utilisée pour un branchement (<code>true</code>) ou non (<code>false</code>)
+	 * 
+	 * @return <code>true</code> si l'ajout a été fait, <code>false</code> sinon
+	 */
 	public boolean add(Variable variable, boolean use_for_branching)
 	{
 		if(this.variables.add(variable))
@@ -69,6 +94,16 @@ public class Network
 		return false;
 	}
 
+	/**
+	 * Ajoute une contrainte au réseau
+	 * 
+	 * @param a la première variable de la contrainte
+	 * @param b la deuxième variable de la contrainte
+	 * 
+	 * @return <code>true</code> si la contrainte a été ajouté, <code>false</code> sinon
+	 * 
+	 * @throws RuntimeException si l'une des variables est reliée à l'autre, mais pas l'inverse
+	 */
 	public boolean add(Variable a, Variable b)
 	{
 		UniqueList<Variable> a_neighbors = this.constraint(a);
@@ -92,6 +127,11 @@ public class Network
 		return false;
 	}
 
+	/**
+	 * Restaure la cohérence des domaines du réseau
+	 * 
+	 * @return la liste des changements effectués, sous forme d'une pile
+	 */
 	public Stack<Changement> restoreConsistency()
 	{
 		Stack<Changement> changes = new Stack<>();
