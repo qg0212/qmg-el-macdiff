@@ -27,6 +27,11 @@ public class Variable
 		return this.domain;
 	}
 
+	public boolean singleton()
+	{
+		return (this.domain.count()==1);
+	}
+
 	public void incrDegree()
 	{
 		this.degree += 1;
