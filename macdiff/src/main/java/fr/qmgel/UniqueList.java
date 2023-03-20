@@ -89,4 +89,46 @@ public class UniqueList<T> implements Iterable<T>
 	{
 		return this.list.iterator();
 	}
+
+	@Override
+	public boolean equals(Object object)
+	{
+		if(object!=null)
+		{
+			if(this!=object)
+			{
+				if(this.getClass()==object.getClass())
+				{
+					return this.equals((UniqueList<T>)object);
+				}
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public boolean equals(UniqueList<T> unique_list)
+	{
+		if(unique_list!=null)
+		{
+			if(this!=unique_list)
+			{
+				if(this.count()==unique_list.count())
+				{
+					for(T element : this.list)
+					{
+						if(!unique_list.contains(element))
+						{
+							return false;
+						}
+					}
+					return true;
+				}
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
 }

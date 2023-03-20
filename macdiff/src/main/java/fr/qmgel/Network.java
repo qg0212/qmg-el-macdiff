@@ -164,6 +164,48 @@ public class Network
 	}
 
 	@Override
+	public boolean equals(Object object)
+	{
+		if(object!=null)
+		{
+			if(this!=object)
+			{
+				if(this.getClass()==object.getClass())
+				{
+					return this.equals((Network)object);
+				}
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public boolean equals(Network network)
+	{
+		if(network!=null)
+		{
+			if(this!=network)
+			{
+				if(this.variables.equals(network.variables()) && this.branchings.size()==network.branchings().size())
+				{
+					for(Variable variable : this.branchings)
+					{
+						if(!network.branchings().contains(variable))
+						{
+							return false;
+						}
+					}
+					return true;
+				}
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public String toString()
 	{
 		String network = "> Variables :";

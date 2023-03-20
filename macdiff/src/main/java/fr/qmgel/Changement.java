@@ -36,4 +36,35 @@ public class Changement
 	{
 		return this.variable.domain().add(this.value);
 	}
+
+	@Override
+	public boolean equals(Object object)
+	{
+		if(object!=null)
+		{
+			if(this!=object)
+			{
+				if(this.getClass()==object.getClass())
+				{
+					return this.equals((Changement)object);
+				}
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public boolean equals(Changement changement)
+	{
+		if(changement!=null)
+		{
+			if(this!=changement)
+			{
+				return (this.variable.equals(changement.variable()) && this.value.equals(changement.value()));
+			}
+			return true;
+		}
+		return false;
+	}
 }

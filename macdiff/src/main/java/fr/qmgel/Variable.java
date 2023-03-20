@@ -52,6 +52,37 @@ public class Variable
 	}
 
 	@Override
+	public boolean equals(Object object)
+	{
+		if(object!=null)
+		{
+			if(this!=object)
+			{
+				if(this.getClass()==object.getClass())
+				{
+					return this.equals((Variable)object);
+				}
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public boolean equals(Variable variable)
+	{
+		if(variable!=null)
+		{
+			if(this!=variable)
+			{
+				return (this.id==variable.id() && this.degree==variable.degree() && this.domain.equals(variable.domain()));
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public String toString()
 	{
 		String variable = String.format("Variable %d :", this.id);
