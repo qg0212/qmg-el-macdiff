@@ -18,12 +18,12 @@ public class App
 		String filename = (args.length>0 ? args[0] : "default.i");
 		File file = new File("/Users/quentingermain/development/Java/qmg-el-macdiff/macdiff/src/main/resources/".concat(filename));
 
-		Parser parser = new Parser();
+		Parser parser = Parser.instance();
 		Network network = null;
 
 		try
 		{
-			network = parser.analyseFile(file);
+			network = parser.parse(file);
 		}
 		catch(Exception e)
 		{

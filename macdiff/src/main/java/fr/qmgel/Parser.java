@@ -1,130 +1,147 @@
 package fr.qmgel;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.ArrayList;
+import fr.qmgel.exceptions.*;
+
+import java.io.*;
+
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class Parser
 {
-	/**
-	 * Traduit le fichier d'instance en un objet Network
-     * @param file le fichier d'instance décrivant le réseau de contrainte
-	 * @return le reseau instancié avec ses variables, leur domaine et les contraintes
-	 * @throws SyntaxeException
-	 */
-    public Network analyseFile(File file) throws SyntaxeException
-    {
-        ArrayList<String> tabLine = readFile(file);
-        Hashtable<String,Variable> variables = new Hashtable<>();
-        ArrayList<ArrayList<String>> constraints = new ArrayList<>();
-
-        for(String line : tabLine)
-        {
-            if(line.matches("^[AB]\\s[1-9][0-9]*\\s:(\\s[0-9]+)+\\s*(%.*)?$")) //Si la ligne correspond à l'expression d'une variable
-            {
-                String[] data = line.split("\\s+"); //Separer la ligne selon les espaces
-                /*boolean branchement = false;
-                if(data[0].equals("B"))
-                {
-                branchement = true;
-                }*/
-
-                int id = Integer.parseInt(data[1]); //Recuperer l'identifiant de la variable
-                Variable variable;
-                if(variables.containsKey(Integer.toString(id))) //Si la variable existe deja
-                {
-                    variable = variables.get(Integer.toString(id));
-                }
-                else
-                {
-                    variable = new Variable(id); //Initialisation d'une Variable avec l'identifiant
-                }
-
-                //Recuperer les valeurs du domaine de la variable
-                int i = 3;
-                while(i<data.length && !data[i].substring(0,1).equals("%"))
-                {
-                    int val = Integer.parseInt(data[i]);
-                    variable.domain().add(val); 
-                    i++;
-                }
-                variables.put(data[1], variable);
-            }
-            else if(line.matches("^C(\\s[1-9][0-9]*){2}\\s*(%.*)?")) //Regex correspondant à l'expression d'une contrainte
-			{
-                String[] dataConstraints = line.split("\\s+"); //Separer la ligne selon les espaces
-				ArrayList<String> contDiff = new ArrayList<>();
-
-                int i = 1;
-                while(i<dataConstraints.length && !dataConstraints[i].substring(0,1).equals("%"))
-				{
-                    if(variables.containsKey(dataConstraints[i])) //Si la variable existe deja
-                    {
-                        contDiff.add(dataConstraints[i]);
-                        i++;
-                    }
-                    else //Si elle n'existe pas encore
-                    {
-                        variables.put(dataConstraints[i], new Variable(Integer.parseInt(dataConstraints[i])));
-                    }
-				}
-				constraints.add(contDiff);
-			}
-            else if(line.matches("^C\\s[0-9]{0,1}$|^C.*[,;.=+\\/_<>+a-zAD-Zéè&@#ç-].*") || line.matches("^B\\s[1-9][0-9]*\\s*:*[0-9]*(\\s[0-9])*\\s*$|^B.*[.;,=+^\\_/\"<>a-zAD-Z-].*$"))
-            {
-                throw new SyntaxeException();
-            }
-            else if(line.matches("^B\\s0[0-9]*.+")) //Identifiant de type "01"
-            {
-                System.out.println(">>>>Warning: Identifiant d'une variable commançant par un 0. Elle n'a pas été stocké.");
-            }
-        }
-        return addToNetwork(variables, constraints);
-    }
-
-    /**
-	 * Convertit le fichier d'instance en une liste de String contenant chaque ligne du fichier
-     * @param file le fichier d'instance décrivant le réseau de contrainte
-	 * @return la liste des lignes du fichier
-	 */
-    public ArrayList<String> readFile(File file)
-    {
-        String line;
-        ArrayList<String> tabLine = new ArrayList<>();
-        try
-        {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            while ((line = br.readLine()) != null) //Lire tant qu'on n'arrive pas a la fin du fichier
-            {
-            	tabLine.add(line);
-            }
-            br.close();
-        } catch (Exception e)
-        {
-            //Exception si le fichier ne peut pas etre lu
-            System.out.println(">>>>Erreur: Le fichier n'a pas pu etre lu.");
-        }
-        return tabLine;
-    }
-
-   	/**
-	 * Traduit le fichier d'instance en un objet Network
-     * @param variables le fichier d'instance décrivant le réseau de contrainte
-	 * @return la liste
-	 */
-    public Network addToNetwork(Hashtable<String, Variable> variables, ArrayList<ArrayList<String>> constraints)
-    {
-        //Initalisation d'un reseau et ajout des variables
-        Network network = new Network();
-        variables.forEach((key, value) -> network.add(value, true));
-
-        //Ajout des contraintes
-        for(int x = 0; x < constraints.size(); x++)
+	public static Parser instance()
+	{
+		if(Parser.instance==null)
 		{
-			network.add(variables.get(constraints.get(x).get(0)), variables.get(constraints.get(x).get(1)));
+			Parser.instance = new Parser();
 		}
-        return network;
-    }
+		return Parser.instance;
+	}
+	private static Parser instance;
+
+	private static final String INT = "(0|[1-9][0-9]*)";
+	private static final String COMMENT = "(%.*)";
+	private static final String VARIABLE = "([AB]\\s+"+ INT +"\\s+:(\\s+"+ INT +")+)";
+	private static final String CONSTRAINT = "(C\\s+"+ INT +"\\s+"+ INT +")";
+	private static final String PATTERN = "^("+ CONSTRAINT +"|"+ VARIABLE +")\\s*"+ COMMENT +"?$";
+
+	private File file;
+	private Network network;
+	private Hashtable<Integer,Variable> variables;
+	private Hashtable<Integer,String[]> constraints;
+
+	private void init()
+	{
+		this.network = new Network();
+		this.variables = new Hashtable<>();
+		this.constraints = new Hashtable<>();
+	}
+
+	public Network parse(File file) throws FileNotFoundException
+	{
+		if(!file.exists())
+		{
+			throw new FileNotFoundException();
+		}
+		this.file = file;
+
+		this.init();
+
+		try
+		{
+			this.addVariables();
+			this.addConstraints();
+		}
+		catch(Exception exception)
+		{
+			System.err.println(exception);
+			System.exit(1);
+		}
+
+		return this.network;
+	}
+
+	private void addVariables() throws SyntaxeException, DuplicateIdException, IOException
+	{
+		int line_number = 1;
+		String line;
+		FileReader fr = new FileReader(this.file);
+		BufferedReader br = new BufferedReader(fr);
+		while((line=br.readLine())!=null)
+		{
+			line = line.trim();
+			if(!line.isEmpty() && line.charAt(0)!='%')
+			{
+				if(line.matches(Parser.PATTERN))
+				{
+					String[] data = line.split("\\s+");
+					if(data[0].equals("C"))
+					{
+						this.constraints.put(line_number, data);
+					}
+					else
+					{
+						Variable variable = this.createVariable(data);
+						if(this.variables.get(variable.id())!=null)
+						{
+							throw new DuplicateIdException(line_number);
+						}
+						this.variables.put(variable.id(), variable);
+						this.network.add(variable, data[0].equals("B"));
+					}
+				}
+				else
+				{
+					throw new SyntaxeException(line_number);
+				}
+			}
+			line_number += 1;
+		}
+	}
+
+	private void addConstraints() throws DuplicateConstraintException, UnknowVariableException
+	{
+		Enumeration<Integer> keys = this.constraints.keys();
+		while(keys.hasMoreElements())
+		{
+			Integer line_number = keys.nextElement();
+			String[] data = this.constraints.get(line_number);
+			Integer id_a = Integer.parseInt(data[1]);
+			Variable variable_a = this.variables.get(id_a);
+			if(variable_a!=null)
+			{
+				Integer id_b = Integer.parseInt(data[2]);
+				Variable variable_b = this.variables.get(id_b);
+				if(variable_b!=null)
+				{
+					if(!this.network.add(variable_a, variable_b))
+					{
+						throw new DuplicateConstraintException(line_number);
+					}
+				}
+				else
+				{
+					throw new UnknowVariableException(line_number, id_b);
+				}
+			}
+			else
+			{
+				throw new UnknowVariableException(line_number, id_a);
+			}
+		}
+	}
+
+	private Variable createVariable(String[] data)
+	{
+		int index=3, id=Integer.parseInt(data[1]);
+		Variable variable = new Variable(id);
+		do
+		{
+			Integer value = Integer.parseInt(data[index]);
+			variable.domain().add(value);
+			index += 1;
+		}
+		while(index<data.length && data[index].charAt(0)!='%');
+		return variable;
+	}
 }
