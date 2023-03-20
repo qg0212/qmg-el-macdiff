@@ -2,7 +2,6 @@ package fr.qmgel;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Stack;
 
 public class Network
 {
@@ -45,9 +44,9 @@ public class Network
 	 * 
 	 * @return la liste des variables qui sont des singletons, représentée par une pile
 	 */
-	public Stack<Variable> singletons()
+	public MyStack<Variable> singletons()
 	{
-		Stack<Variable> singletons = new Stack<>();
+		MyStack<Variable> singletons = new MyStack<>();
 		for(Variable variable : this.variables)
 		{
 			if(variable.singleton())
@@ -132,10 +131,10 @@ public class Network
 	 * 
 	 * @return la liste des changements effectués, sous forme d'une pile
 	 */
-	public Stack<Changement> restoreConsistency()
+	public MyStack<Changement> restoreConsistency()
 	{
-		Stack<Changement> changes = new Stack<>();
-		Stack<Variable> singletons = this.singletons();
+		MyStack<Changement> changes = new MyStack<>();
+		MyStack<Variable> singletons = this.singletons();
 		while(!singletons.empty())
 		{
 			Variable singleton = singletons.pop();
