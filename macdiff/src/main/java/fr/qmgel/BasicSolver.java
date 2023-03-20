@@ -1,7 +1,6 @@
 package fr.qmgel;
 
 import java.util.ArrayList;
-import java.util.Stack;
 
 public class BasicSolver
 {
@@ -40,7 +39,7 @@ public class BasicSolver
 	{
 		ArrayList<Solution> solutions = new ArrayList<>();
 
-		Stack<Changement> changes = this.network.restoreConsistency();
+		MyStack<Changement> changes = this.network.restoreConsistency();
 		if(changes.empty() || !changes.peek().variable().domain().empty())
 		{
 			Variable branching_variable = this.branchingVariable();

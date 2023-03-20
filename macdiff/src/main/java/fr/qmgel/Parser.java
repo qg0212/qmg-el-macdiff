@@ -6,6 +6,7 @@ import java.io.*;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.regex.Pattern;
 
 public class Parser
 {
@@ -23,7 +24,9 @@ public class Parser
 	private static final String COMMENT = "(%.*)";
 	private static final String VARIABLE = "([AB]\\s+"+ INT +"\\s+:(\\s+"+ INT +")+)";
 	private static final String CONSTRAINT = "(C\\s+"+ INT +"\\s+"+ INT +")";
-	private static final String PATTERN = "^("+ CONSTRAINT +"|"+ VARIABLE +")\\s*"+ COMMENT +"?$";
+
+	private static final String SYNTAXE = "^("+ CONSTRAINT +"|"+ VARIABLE +")\\s*"+ COMMENT +"?$";
+	private static final Pattern PATTERN = Pattern.compile(Parser.SYNTAXE);
 
 	private File file;
 	private Network network;
@@ -72,7 +75,7 @@ public class Parser
 			line = line.trim();
 			if(!line.isEmpty() && line.charAt(0)!='%')
 			{
-				if(line.matches(Parser.PATTERN))
+				if(Parser.PATTERN.matcher(line).matches())
 				{
 					String[] data = line.split("\\s+");
 					if(data[0].equals("C"))

@@ -1,3 +1,5 @@
+package fr.qmgel;
+
 /**
  * Implémentation d'une collection d'élément sous forme d'une pile.
  * 
