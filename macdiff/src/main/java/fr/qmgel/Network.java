@@ -5,6 +5,7 @@ import java.util.Hashtable;
 
 public class Network
 {
+	private Sequence variable_id;
 	private UniqueList<Variable> variables;
 	private ArrayList<Variable> branchings;
 	private Hashtable<Variable,UniqueList<Variable>> constraints;
@@ -17,6 +18,11 @@ public class Network
 		this.variables = new UniqueList<>();
 		this.branchings = new ArrayList<>();
 		this.constraints = new Hashtable<>();
+	}
+
+	public Sequence variableId()
+	{
+		return this.variable_id;
 	}
 
 	public UniqueList<Variable> variables()
