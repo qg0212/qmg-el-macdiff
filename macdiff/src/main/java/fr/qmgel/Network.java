@@ -15,6 +15,7 @@ public class Network
 	 */
 	public Network()
 	{
+		this.variable_id = new Sequence(-1, -1);
 		this.variables = new UniqueList<>();
 		this.branchings = new ArrayList<>();
 		this.constraints = new Hashtable<>();

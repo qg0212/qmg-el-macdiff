@@ -81,9 +81,9 @@ public class AppTest {
     @Test
     public void restoreConsistencyTest(){
         BasicSolver solver = new BasicSolver(this.networkResult);
-        Stack<Changement> changes = solver.network().restoreConsistency();
-        Stack<Changement> changesEmpty = new Stack<>();
-        assertEquals(changes.size(), changesEmpty.size()); 
+        MyStack<Changement> changes = solver.network().restoreConsistency();
+        MyStack<Changement> changesEmpty = new MyStack<>();
+        assertEquals(changes.count(), changesEmpty.count()); 
     }
 
 }
