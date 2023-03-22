@@ -25,6 +25,13 @@ public class LearningSolver extends Solver
 		return this.last_start_variables;
 	}
 
+	/**
+	 * Recherche de solutions du réseau en gérant les redémarrages
+	 * 
+	 * @param all_solutions indique si on cherche toutes les solutions (<code>true</code>) ou seulement une (<code>false</code>)
+	 * 
+	 * @return la liste des solutions trouvées (vide s'il n'y en a pas)
+	 */
 	public ArrayList<Solution> solve(boolean all_solutions)
 	{
 		ArrayList<Solution> solutions = new ArrayList<>();
@@ -44,13 +51,13 @@ public class LearningSolver extends Solver
 	}
 
 	/**
-	 * Recherche de solutions du réseau
+	 * Recherche les solutions jusqu'au prochain redémarrage de la recherche
 	 * 
 	 * @param all_solutions indique si on cherche toutes les solutions (<code>true</code>) ou seulement une (<code>false</code>)
 	 * 
 	 * @return la liste des solutions trouvées (vide s'il n'y en a pas)
 	 */
-	public ArrayList<Solution> solve_aux(boolean all_solutions)
+	private ArrayList<Solution> solve_aux(boolean all_solutions)
 	{
 		ArrayList<Solution> solutions = new ArrayList<>();
 
@@ -116,6 +123,10 @@ public class LearningSolver extends Solver
 		return solutions;
 	}
 
+	/**
+	 * Ajoute une connaissance au réseau
+	 * Consulter le rapport pour des explications plus détaillées
+	 */
 	private void addKnowledge()
 	{
 		if(!this.branchings.isEmpty())
@@ -134,12 +145,20 @@ public class LearningSolver extends Solver
 		}
 	}
 
+	/**
+	 * Incrémente le nombre de branchements effectuées
+	 */
 	private void incrNumberOfBranchings()
 	{
 		this.number_of_branchings += 1;
 		this.current_number_of_branchings += 1;
 	}
 
+	/**
+	 * Indique si un redémarrage doit être effectué
+	 * 
+	 * @return <code>true</code> si la recherche doit redémarrer, <code>false</code> sinon
+	 */
 	private boolean restart()
 	{
 		if(!this.restart)
@@ -149,6 +168,9 @@ public class LearningSolver extends Solver
 		return this.restart;
 	}
 
+	/**
+	 * Réinitialise les paramètres d'une recherche
+	 */
 	private void reset()
 	{
 		this.current_number_of_branchings = 0;
@@ -175,6 +197,11 @@ public class LearningSolver extends Solver
 		return branching_variable;
 	}
 
+	/**
+	 * Recherche la variable de départ de la recherche
+	 * 
+	 * @return la variable à utiliser pour démarrer la recherche
+	 */
 	public Variable startVariable()
 	{
 		double tmp, ratio=Double.POSITIVE_INFINITY;
@@ -208,6 +235,11 @@ public class LearningSolver extends Solver
 		return start_variable;
 	}
 
+	/**
+	 * Actualise la liste des dernières variables utilisées pour un démarrage en conservant seulement les deux dernières
+	 * 
+	 * @param variable la dernière variable utilisée
+	 */
 	private void updateLastStartVariables(Variable variable)
 	{
 		this.last_start_variables.addFirst(variable);
