@@ -2,10 +2,10 @@ package fr.qmgel;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Stack;
 
 public class Network
 {
+	private Sequence variable_id;
 	private UniqueList<Variable> variables;
 	private ArrayList<Variable> branchings;
 	private Hashtable<Variable,UniqueList<Variable>> constraints;
@@ -15,9 +15,15 @@ public class Network
 	 */
 	public Network()
 	{
+		this.variable_id = new Sequence(-1, -1);
 		this.variables = new UniqueList<>();
 		this.branchings = new ArrayList<>();
 		this.constraints = new Hashtable<>();
+	}
+
+	public Sequence variableId()
+	{
+		return this.variable_id;
 	}
 
 	public UniqueList<Variable> variables()
@@ -45,9 +51,9 @@ public class Network
 	 * 
 	 * @return la liste des variables qui sont des singletons, représentée par une pile
 	 */
-	public Stack<Variable> singletons()
+	public MyStack<Variable> singletons()
 	{
-		Stack<Variable> singletons = new Stack<>();
+		MyStack<Variable> singletons = new MyStack<>();
 		for(Variable variable : this.variables)
 		{
 			if(variable.singleton())
@@ -132,10 +138,10 @@ public class Network
 	 * 
 	 * @return la liste des changements effectués, sous forme d'une pile
 	 */
-	public Stack<Changement> restoreConsistency()
+	public MyStack<Changement> restoreConsistency()
 	{
-		Stack<Changement> changes = new Stack<>();
-		Stack<Variable> singletons = this.singletons();
+		MyStack<Changement> changes = new MyStack<>();
+		MyStack<Variable> singletons = this.singletons();
 		while(!singletons.empty())
 		{
 			Variable singleton = singletons.pop();
@@ -161,6 +167,48 @@ public class Network
 			}
 		}
 		return changes;
+	}
+
+	@Override
+	public boolean equals(Object object)
+	{
+		if(object!=null)
+		{
+			if(this!=object)
+			{
+				if(this.getClass()==object.getClass())
+				{
+					return this.equals((Network)object);
+				}
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public boolean equals(Network network)
+	{
+		if(network!=null)
+		{
+			if(this!=network)
+			{
+				if(this.variables.equals(network.variables()) && this.branchings.size()==network.branchings().size())
+				{
+					for(Variable variable : this.branchings)
+					{
+						if(!network.branchings().contains(variable))
+						{
+							return false;
+						}
+					}
+					return true;
+				}
+				return false;
+			}
+			return true;
+		}
+		return false;
 	}
 
 	@Override
