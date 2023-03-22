@@ -1,14 +1,14 @@
 package fr.qmgel;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 public class Network
 {
 	private Sequence variable_id;
 	private UniqueList<Variable> variables;
 	private ArrayList<Variable> branchings;
-	private Hashtable<Variable,UniqueList<Variable>> constraints;
+	private HashMap<Variable,UniqueList<Variable>> constraints;
 
 	/**
 	 * Construit un réseau de contraintes vide
@@ -18,7 +18,7 @@ public class Network
 		this.variable_id = new Sequence(-1, -1);
 		this.variables = new UniqueList<>();
 		this.branchings = new ArrayList<>();
-		this.constraints = new Hashtable<>();
+		this.constraints = new HashMap<>();
 	}
 
 	public Sequence variableId()
@@ -41,7 +41,7 @@ public class Network
 		return this.constraints.get(variable);
 	}
 
-	public Hashtable<Variable,UniqueList<Variable>> constraints()
+	public HashMap<Variable,UniqueList<Variable>> constraints()
 	{
 		return this.constraints;
 	}
