@@ -1,12 +1,13 @@
 package fr.qmgel;
 
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class Solution
 {
 	private int number_of_branchings;
-	private Hashtable<Variable,Integer> assignments;
+	private HashMap<Variable,Integer> assignments;
 
 	/**
 	 * Construit une solution pour un réseau spécifique
@@ -17,7 +18,7 @@ public class Solution
 	public Solution(Network network, int number_of_branchings)
 	{
 		this.number_of_branchings = number_of_branchings;
-		this.assignments = new Hashtable<>();
+		this.assignments = new HashMap<>();
 		for(Variable variable : network.branchings())
 		{
 			if(!variable.singleton())
@@ -38,7 +39,7 @@ public class Solution
 		return this.assignments.get(variable);
 	}
 
-	public Hashtable<Variable,Integer> assignments()
+	public HashMap<Variable,Integer> assignments()
 	{
 		return this.assignments;
 	}
@@ -78,12 +79,12 @@ public class Solution
 	public String toString()
 	{
 		String solution = "Solution : {";
-		Enumeration<Variable> variables = this.assignments.keys();
-		while(variables.hasMoreElements())
+		Iterator<Variable> variables = this.assignments.keySet().iterator();
+		while(variables.hasNext())
 		{
-			Variable variable = variables.nextElement();
+			Variable variable = variables.next();
 			solution = solution.concat(String.format(" %d=%d", variable.id(), this.assignment(variable)));
-			if(variables.hasMoreElements())
+			if(variables.hasNext())
 			{
 				solution = solution.concat(";");
 			}
