@@ -112,6 +112,18 @@ public class MyStack<T>
 	}
 
 	/**
+	 * Efface la pile
+	 */
+	public void clear()
+	{
+		while(this.head>-1)
+		{
+			this.stack[this.head] = null;
+			this.head -= 1;
+		}
+	}
+
+	/**
 	 * Indique si la pile contient un élément spécifique.
 	 * 
 	 * @param element l'élément dont on teste la présence.
@@ -135,13 +147,16 @@ public class MyStack<T>
 	 */
 	private void decCapacity()
 	{
-		this.capacity /= 2;
-		T[] new_stack = (T[])(new Object[this.capacity]);
-		for(int i=0; i<=this.head; i++)
+		if(this.capacity>2)
 		{
-			new_stack[i] = this.stack[i];
+			this.capacity /= 2;
+			T[] new_stack = (T[])(new Object[this.capacity]);
+			for(int i=0; i<=this.head; i++)
+			{
+				new_stack[i] = this.stack[i];
+			}
+			this.stack = new_stack;
 		}
-		this.stack = new_stack;
 	}
 
 	/**

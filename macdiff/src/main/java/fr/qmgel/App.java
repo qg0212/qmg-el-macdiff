@@ -31,7 +31,7 @@ public class App
 			System.exit(1);
 		}
 
-		BasicSolver solver = new BasicSolver(network);
+		Solver solver = Solver.get("learning", network);
 		ArrayList<Solution> solutions = solver.solve(true);
 
 		System.out.println("> Solution(s) :");
