@@ -64,6 +64,9 @@ public class Parser
 		return this.network;
 	}
 
+	/**
+	 * Lit le fichier en ajoutant les variables au réseau et en stockant temporairement les contraintes
+	 */
 	private void addVariables() throws SyntaxeException, DuplicateIdException, IOException
 	{
 		int line_number = 1;
@@ -102,6 +105,9 @@ public class Parser
 		}
 	}
 
+	/**
+	 * Ajoute les contraintes définies dans le fichier au réseau
+	 */
 	private void addConstraints() throws DuplicateConstraintException, UnknowVariableException
 	{
 		Enumeration<Integer> keys = this.constraints.keys();
@@ -134,6 +140,13 @@ public class Parser
 		}
 	}
 
+	/**
+	 * Crée une nouvelle variable pour le réseau
+	 * 
+	 * @param data les donées de la variable à créer
+	 * 
+	 * @return la variable créée
+	 */
 	private Variable createVariable(String[] data)
 	{
 		int index=3, id=Integer.parseInt(data[1]);
