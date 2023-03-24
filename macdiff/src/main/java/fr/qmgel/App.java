@@ -37,8 +37,7 @@ public class App
 				case "--file":
 				{
 					index += 1;
-					String path = args[index].replaceAll("^r/", "/Users/quentingermain/development/Java/qmg-el-macdiff/macdiff/src/main/resources/");
-					file = new File(path);
+					file = new File(args[index]);
 					break;
 				}
 				case "-s":
@@ -57,7 +56,7 @@ public class App
 			try
 			{
 				network = parser.parse(file);
-				System.out.println(network.initialNumberOfAssignments());
+				//System.out.println(network.initialNumberOfAssignments());
 			}
 			catch(Exception e)
 			{
