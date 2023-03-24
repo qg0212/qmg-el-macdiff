@@ -5,7 +5,7 @@ import fr.qmgel.exceptions.*;
 import java.io.*;
 
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 public class Parser
@@ -30,14 +30,14 @@ public class Parser
 
 	private File file;
 	private Network network;
-	private Hashtable<Integer,Variable> variables;
-	private Hashtable<Integer,String[]> constraints;
+	private HashMap<Integer,Variable> variables;
+	private HashMap<Integer,String[]> constraints;
 
 	private void init()
 	{
 		this.network = new Network();
-		this.variables = new Hashtable<>();
-		this.constraints = new Hashtable<>();
+		this.variables = new HashMap<>();
+		this.constraints = new HashMap<>();
 	}
 
 	public Network parse(File file) throws FileNotFoundException
@@ -110,10 +110,8 @@ public class Parser
 	 */
 	private void addConstraints() throws DuplicateConstraintException, UnknowVariableException
 	{
-		Enumeration<Integer> keys = this.constraints.keys();
-		while(keys.hasMoreElements())
+		for(Integer line_number : this.constraints.keySet())
 		{
-			Integer line_number = keys.nextElement();
 			String[] data = this.constraints.get(line_number);
 			Integer id_a = Integer.parseInt(data[1]);
 			Variable variable_a = this.variables.get(id_a);

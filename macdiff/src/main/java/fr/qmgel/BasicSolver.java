@@ -39,16 +39,19 @@ public class BasicSolver extends Solver
 				//We must do a branching
 
 				//First branch
-				this.number_of_branchings += 1;
 				ArrayList<Integer> queue = branching_variable.domain().remove(1, -1);
+				this.number_of_branchings += 1;
 				solutions.addAll(this.solve(all_solutions));
 				branching_variable.domain().add(queue);
 
 				//Second branch
 				if(solutions.isEmpty() || all_solutions)
 				{
-					this.number_of_branchings += 1;
 					Integer head = branching_variable.domain().remove(0);
+					if(branching_variable.singleton())
+					{
+						this.number_of_branchings += 1;
+					}
 					solutions.addAll(this.solve(all_solutions));
 					branching_variable.domain().add(head);
 				}

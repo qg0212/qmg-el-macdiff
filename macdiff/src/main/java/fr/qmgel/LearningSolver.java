@@ -6,8 +6,9 @@ import java.util.LinkedList;
 
 public class LearningSolver extends Solver
 {
+	protected int number_of_starts;
 	protected int current_number_of_branchings;
-	protected boolean restart, echec;
+	protected boolean restart, echecs[];
 	protected LinkedList<Assignment> branchings;
 	protected UniqueList<Variable> all_branchings;
 	protected LinkedList<Variable> last_start_variables;
@@ -15,9 +16,16 @@ public class LearningSolver extends Solver
 	public LearningSolver(Network network)
 	{
 		super(network);
+		this.echecs = new boolean[] {false, false, false};
+		this.number_of_starts = 0;
 		this.branchings = new LinkedList<>();
 		this.all_branchings = new UniqueList<>();
 		this.last_start_variables = new LinkedList<>();
+	}
+
+	public int numberOfStarts()
+	{
+		return this.number_of_starts;
 	}
 
 	public LinkedList<Variable> lastStartVariables()
@@ -39,8 +47,9 @@ public class LearningSolver extends Solver
 		do
 		{
 			this.reset();
+			this.number_of_starts += 1;
 			solutions.addAll(this.solve_aux(all_solutions));
-			if(this.echec)
+			if(this.echecs[0])
 			{
 				this.addKnowledge();
 			}
@@ -97,8 +106,11 @@ public class LearningSolver extends Solver
 					{
 						this.branchings.removeLast();
 						this.branchings.addLast(new Assignment(branching_variable, branching_variable.domain().get(0), false));
-						this.incrNumberOfBranchings();
 						Integer head = branching_variable.domain().remove(0);
+						if(branching_variable.singleton())
+						{
+							this.incrNumberOfBranchings();
+						}
 						solutions.addAll(this.solve_aux(all_solutions));
 						branching_variable.domain().add(head);
 						if(!this.restart())
@@ -111,7 +123,7 @@ public class LearningSolver extends Solver
 		}
 		else
 		{
-			this.echec = true;
+			this.echecs[0] = true;
 		}
 
 		//Rollback of changes
@@ -163,7 +175,14 @@ public class LearningSolver extends Solver
 	{
 		if(!this.restart)
 		{
-			this.restart = this.current_number_of_branchings>=32;
+			if(this.number_of_starts<3 || this.echecs[0] || this.echecs[1] || this.echecs[2])
+			{
+				if(this.current_number_of_branchings>=4)
+				{
+					double couverture = 1.0 - ((double)this.network.currentNumberOfAssignments() / (double)this.network.initialNumberOfAssignments());
+					this.restart = (couverture < 0.02*this.current_number_of_branchings);
+				}
+			}
 		}
 		return this.restart;
 	}
@@ -175,7 +194,9 @@ public class LearningSolver extends Solver
 	{
 		this.current_number_of_branchings = 0;
 		this.restart = false;
-		this.echec = false;
+		this.echecs[2] = this.echecs[1];
+		this.echecs[1] = this.echecs[0];
+		this.echecs[0] = false;
 		this.branchings.clear();
 	}
 

@@ -1,7 +1,6 @@
 package fr.qmgel;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -38,8 +37,7 @@ public class App
 				case "--file":
 				{
 					index += 1;
-					String path = args[index].replaceAll("^r/", "/Users/quentingermain/development/Java/qmg-el-macdiff/macdiff/src/main/resources/");
-					file = new File(path);
+					file = new File(args[index]);
 					break;
 				}
 				case "-s":
@@ -58,6 +56,7 @@ public class App
 			try
 			{
 				network = parser.parse(file);
+				//System.out.println(network.initialNumberOfAssignments());
 			}
 			catch(Exception e)
 			{
@@ -80,6 +79,12 @@ public class App
 					System.out.printf(">>> %s\n", solution);
 				}
 				System.out.printf(">>>>> %d solution(s) trouvée(s) !\n", solutions.size());
+			}
+
+			if(solver.getClass()==LearningSolver.class)
+			{
+				LearningSolver ls = (LearningSolver)solver;
+				System.out.printf("> %d démarrage(s) effectué(s)\n", ls.numberOfStarts());
 			}
 		}
 	}
